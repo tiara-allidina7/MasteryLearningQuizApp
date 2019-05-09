@@ -5,7 +5,7 @@
 This application is intended for use in a Mastery Learning environment, where learners take and re-take a variety of quizzes. 
 The instructor dashboard allows for insight into learner performance, individually and on aggregate.
 
-##Set Up
+## Set Up
 
 - Install Django. This can be done via pip: `pip install Django`
 - Initialize the secret_key field in /ml_quiz_app/config.py to a random string of 50 characters
@@ -14,13 +14,13 @@ The instructor dashboard allows for insight into learner performance, individual
     - `python manage.py makemigrations dashboard`
     - `python manage.py migrate`
 
-####Development
+#### Development
 - Run the command python manage.py runserver to run locally.
 
-####Production
+#### Production
 - Set-up in production environment is dependent on server configuration. View the [Django deployment documentation](https://docs.djangoproject.com/en/2.2/howto/deployment/) for more information.
 
-##Configuration & Use
+## Configuration & Use
 - Answers keys to quizzes are contained in /import_data/rubric.csv. 
 Once updated, the rubric can be imported via the button on the dashboard home page or by running the command `python manage.py import_rubric`.
 An entry for a quiz must be added to the rubric and imported before learners can take that quiz through the system.
