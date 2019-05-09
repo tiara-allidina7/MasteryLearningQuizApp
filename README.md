@@ -15,10 +15,11 @@ The instructor dashboard allows for insight into learner performance, individual
     - `python manage.py migrate`
 
 #### Development
-- Run the command python manage.py runserver to run locally.
+- Run the command `python manage.py runserver` to run locally.
 
 #### Production
 - Set-up in production environment is dependent on server configuration. View the [Django deployment documentation](https://docs.djangoproject.com/en/2.2/howto/deployment/) for more information.
+- Static file serving will also need to be configured in order to view quiz files through the instructor dashboard. See the [Django documentation](https://docs.djangoproject.com/en/2.2/howto/static-files/deployment/) for various approaches to this.
 
 ## Configuration & Use
 - Answers keys to quizzes are contained in /import_data/rubric.csv. 
