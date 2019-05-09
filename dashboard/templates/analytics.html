@@ -1,0 +1,16 @@
+<body style="font-family:helvetica;">
+
+<h1 style="background-color:dodgerblue; color:white; font-size:200%; text-align:center; padding:10px">{{ COURSE_NAME }}
+    Analytics Dash</h1>
+
+<div>
+    {% for graph in graphs %}
+
+    <img src="data:image/png;base64,{{graph|safe}}" style="width:33%">
+    {% if forloop.counter|divisibleby:3 %}
+</div>
+<div>
+    {% endif %}
+    {% endfor %}
+</div>
+</body>

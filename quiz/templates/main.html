@@ -1,0 +1,47 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Quiz Form
+    </title>
+</head>
+
+<style>
+    .errorlist
+    {
+        color: red;
+    }
+    .button {
+	  display: inline-block;
+	  padding: 10px 20px;
+	  font-size: 16px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: dodgerblue;
+	  border: 1px solid #808182;
+	  border-radius: 3px;
+	}
+
+    .button:active {
+	  background-color: #125699;
+	}
+
+</style>
+
+<body style="font-family:helvetica">
+<h1 style="background-color:dodgerblue; color:white; font-family:helvetica; font-size:200%; text-align:center; padding:10px">
+    {{ COURSE_NAME }} Quiz Form</h1>
+<p style="text-align:center">Please enter the following information:</p>
+
+
+<form action="" method="post" style="text-align:center;" autocomplete="off">
+    {% csrf_token %}
+    <table style="font-family:helvetica; margin: 0 auto; text-align:left">
+        {{ form }}
+    </table>
+    <br/>
+    <div style="color:red;margin-bottom:10px">{{form_errors}}</div>
+    <input type="submit" value="Next" class="button"/>
+</form>
+</body>

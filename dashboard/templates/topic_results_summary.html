@@ -1,0 +1,75 @@
+<head>
+    <title>{{ COURSE_NAME }} Dashboard - Topic Results Summary</title>
+    <style>
+	.topnav {
+		background-color: #606060;
+		overflow: hidden;
+	}
+
+	.topnav a {
+		float: left;
+		color: white;
+		font-family:Helvetica;
+		text-align: center;
+		padding: 15px 2px;
+		width: 11.5%;
+		text-decoration: none;
+		font-size: 14px;
+		border-left: 1px solid #808182;
+	}
+
+	.topnav a:hover {
+		background-color: #404040;
+		color: white;
+	}
+
+	.topnav a.active {
+		background-color: dodgerblue;
+		color: white;
+	}
+
+    </style>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<body>
+<div class="topnav">
+    <a href="{% url 'dash_main' %}" style="border-left:0px solid black; width:4%; padding:11px 0px"><i
+            class="material-icons">home</i></a>
+    <a href="{% url 'answer_log' %}">Answer Log</a>
+    <a href="{% url 'results' %}">Results - All</a>
+    <a href="{% url 'results_student' %}">Results - Individual</a>
+    <a class="active">Topic Results</a>
+    <a href="{% url 'quiz_grade_counts' %}">Quiz Grade Counts</a>
+    <a href="{% url 'quiz_analysis' %}">Quiz Analysis</a>
+    <a href="{% url 'feedback_tally' %}">Question Feedback</a>
+    <a href="{% url 'comment' %}">Comment</a>
+</div>
+<br>
+
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+    <tr>
+        <td bgcolor='silver' style='border:1px solid black; padding:5'>Topic:</td>
+        {% for item in query_results %}
+        <td bgcolor='silver' style='border:1px solid black; padding:5'>{{item.topic}}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td bgcolor='E6B5B5' style='border:1px solid black; padding:5'>Failing:</td>
+        {% for item in query_results %}
+        <td bgcolor='E6B5B5' style='border:1px solid black; padding:5'>{{item.fail}}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td bgcolor='A8C881' style='border:1px solid black; padding:5'>Passing:</td>
+        {% for item in query_results %}
+        <td bgcolor='A8C881' style='border:1px solid black; padding:5'>{{item.pass}}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td style='border:1px solid black; padding:5'>Missing:</td>
+        {% for item in query_results %}
+        <td style='border:1px solid black; padding:5'>{{item.missing}}</td>
+        {% endfor %}
+    </tr>
+</table>
+</body>

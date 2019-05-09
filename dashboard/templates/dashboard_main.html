@@ -1,0 +1,80 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard
+    </title>
+    <style>
+		.button {
+	  display: inline-block;
+	  padding: 8px 12px;
+	  font-size: 14px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: dodgerblue;
+	  border: 0.5px solid #808182;
+	  border-radius: 2px;
+	}
+
+	.button:active {
+	  background-color: #125699;
+	}
+
+    </style>
+</head>
+
+<body style="font-family:helvetica;">
+<h1 style="background-color:dodgerblue; color:white; font-size:200%; text-align:center; padding:10px">{{ COURSE_NAME }}
+    Grades Dashboard</h1>
+<h2>Stats</h2>
+<a href="answer_log">Answer Log</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Every student's answer to every quiz question</div>
+<a href="results">Results - All</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Quiz and multiplier results for every student</div>
+<a href="results_student">Results - Individual</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Quiz and multiplier results for specific student
+</div>
+<a href="topic_results_summary">Topic Results Summary</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Pass/fail counts for each topic</div>
+<a href="quiz_grade_counts">Grade Counts per Quiz</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Grade counts for each quiz</div>
+<a href="quiz_analysis">Quiz Analysis</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Averages for each quiz question</div>
+<a href="feedback_tally">Question Feedback Tally</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Correct counts for each question feedback</div>
+<a href="analytics">Analytics</a>
+<div style="padding-left:20px; padding-top:5px">Charts dashboard with quiz analytics</div>
+
+<br>
+<h2>Admin</h2>
+<a href="comment">Student Comment</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Add a comment to a student's profile</div>
+<a href="amendments">Grade Amendments</a>
+<div style="padding-left:20px; padding-bottom:10px; padding-top:5px">Add an amendment or exemption for a student's
+    grade
+</div>
+
+<form action="{% url 'update_grades' %}" method="POST" style="margin-top:10px">
+    {% csrf_token %}
+    <button type="submit" class="button" name="update_grades">Update Grades</button>
+    <span style="font-size:14px">Last Updated: {{last_updated}} UTC</span>
+    <div style="padding-left:20px; padding-bottom:10px; margin-top:5px">Mark unmarked written quiz submissions<br><font
+            size="2">(# Unmarked: {{unmarked}})</font></div>
+</form>
+
+<form action="{% url 'push_grades' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="button" name="push_grades">Push Grades</button>
+    <span style="font-size:14px">Last Pushed: {{last_pushed}} UTC</span>
+    <div style="padding-left:20px; padding-bottom:10px; margin-top:5px">Push grades to students<br><font size="2">(Note:
+        this updates the timestamp in handback - best practice is updating grades right before pushing)</font></div>
+</form>
+
+<form action="{% url 'import_rubric_feedback' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="button" name="import_rubric_feedback">Import Rubric & Feedback</button>
+    <div style="padding-left:20px; padding-bottom:10px; margin-top:5px">Imports rubric and feedback messages into system<br>
+    </div>
+</form>
+</body>

@@ -1,0 +1,448 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard - Student Results
+    </title>
+    <style>
+	td.fail {
+		background-color: E6B5B5;
+	}
+	td.pass {
+		background-color: A8C881;
+	}
+	td.half {
+		background-color: E5DFB3;
+	}
+	td.seven {
+		background-color: D8EAC2;
+	}
+	td.third {
+		background-color: E5D3D3;
+	}
+	td.failreq{
+		background-color: ff4242;
+	}
+	td.exempt{
+	    background-color: D8D8D8;
+	}
+	body {
+		font-family:helvetica
+	}
+	.header{
+  	  background-color: #f9e8d9;
+  	  font-size:15;
+	  display: inline-block;
+	  padding-top: 5px;
+	  padding-bottom: 5px;
+	  padding-left: 10px;
+	  padding-right: 10px;
+	}
+	.collapsible {
+	  background-color: #cce4f9;
+	  color: #444;
+	  cursor: pointer;
+	  padding-left: 8px;
+	  padding-right: 8px;
+	  padding-top:15px;
+	  padding-bottom:15px;
+	  width: 100%;
+	  border: none;
+	  text-align: left;
+	  outline: none;
+	  font-size: 15px;
+	}
+	.content {
+		padding: 0 15px;
+		background-color: white;
+		max-height: scrollHeight;
+		overflow: hidden;
+		transition: max-height 0.2s ease-out;
+	}
+	.collapsible:after {
+		content: '\2796';
+		float: left;
+		margin-left: 5px;
+		margin-right: 5px;
+		vertical-align: middle;
+	}
+	.inactive:after {
+		content: '\02795';
+	}
+	td.wrong {
+		background-color: E6B5B5;
+	}
+	td.right {
+		background-color: c4dba8;
+	}
+	.topnav {
+		background-color: #606060;
+		overflow: hidden;
+	}
+
+	.topnav a {
+		float: left;
+		color: white;
+		font-family:Helvetica;
+		text-align: center;
+		padding: 15px 2px;
+		width: 11.5%;
+		text-decoration: none;
+		font-size: 14px;
+		border-left: 1px solid #808182;
+	}
+
+	.topnav a:hover {
+		background-color: #404040;
+		color: white;
+	}
+
+	.topnav a.active {
+		background-color: dodgerblue;
+		color: white;
+	}
+
+	.button {
+	  display: inline-block;
+	  padding: 8px 12px;
+	  font-size: 14px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: dodgerblue;
+	  border: 0.5px solid #808182;
+	  border-radius: 2px;
+	}
+
+	.button:active {
+	  background-color: #125699;
+	}
+	.cell{
+		border:1px solid black;
+		padding:5;
+	}
+	.cell_header{
+		background-color:#888888;
+		color:white;
+	}
+
+    </style>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<body>
+<div class="topnav">
+    <a href="{% url 'dash_main' %}" style="border-left:0px solid black; width:4%; padding:11px 0px"><i
+            class="material-icons">home</i></a>
+    <a href="{% url 'answer_log' %}">Answer Log</a>
+    <a href="{% url 'results' %}">Results - All</a>
+    <a class="active">Results - Individual</a>
+    <a href="{% url 'topic_results_summary' %}">Topic Results</a>
+    <a href="{% url 'quiz_grade_counts' %}">Quiz Grade Counts</a>
+    <a href="{% url 'quiz_analysis' %}">Quiz Analysis</a>
+    <a href="{% url 'feedback_tally' %}">Question Feedback</a>
+    <a href="{% url 'comment' %}">Comment</a>
+</div>
+<br>
+<form action="#" method="get">
+    <label>Enter student ID:</label>
+    <input type="text" name="student_id" size="5" style="margin-left:10px"/>
+    <br>
+    <input type="submit" class="button" value="Search" name="student_results" style="margin-top:15px">
+</form>
+<p style="color:red">{{error}}</p>
+
+<p class="header">STUDENT INFO</p>
+<p style="width:25%; line-height:1.4; padding-left:40px; max-height:scrollHeight">
+    {% if student_info %}
+    {% for item in student_info %}
+    <font size="2px" style="text-transform: uppercase">{{item.0}}:</font> {{item.1}}
+    <br>
+    {% endfor %}
+
+    {% endif %}
+</p>
+
+<br>
+
+<p class="header">OVERVIEW</p>
+{% if overview %}
+<div style="padding-left:40px">
+    <table style="float:left; display: inline-block; font-family:Helvetica;text-align:center; border-collapse:collapse; td.pass:background-color:black; margin-bottom:10px; margin-right:30px">
+        <tr>
+            <td class="cell cell_header">
+                Total
+            </td>
+        </tr>
+        <tr>
+            <td style='border:1px solid black; padding:5'
+                class="{% if total >= 50 %} pass {% else %} fail {% endif %}">
+                {{total}}
+            </td>
+
+        </tr>
+    </table>
+
+
+    <table style="font-family:Helvetica;text-align:center; border-collapse:collapse; td.pass:background-color:black; margin-bottom:10px">
+        <tr>
+            {% for component in overview %}
+            <td style="text-transform:capitalize;" class="cell cell_header">
+                {{component.label}} <font size="2">(/{{component.worth}})</font>
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for component in overview %}
+            <td style='border:1px solid black; padding:5'
+                class="{% if component.failRequired %} failreq {% elif not component.isPass %} fail {% endif %}">
+                {% if component.mark == -1 %} N/A {% else %} {{component.mark}} {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+
+
+{% for component, results in topic_marks.items %}
+<div style="padding-top:15px; clear:left">
+    <p style="text-transform:capitalize; writing-mode:vertical-rl; transform:rotate(-180deg); display:inline-block; float:left; clear:left; font-size:12px">
+        {{component}}</p>
+    <table style="font-family:Helvetica;text-align:center; border-collapse:collapse; td.pass:background-color:black; margin-bottom:10px">
+        <tr>
+            {% for result in results %}
+            <td style="text-transform:uppercase;" class="cell cell_header">{{result.topic}}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for result in results %}
+            <td style='border:1px solid black; padding:5' class="{{result.status}}">
+                {% if result.grade == -1 %} N/A {% elif result.grade is not None %} {{result.grade}} {% else %} &nbsp
+                {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+{% endfor %}
+{% endif %}
+
+<p style="clear:left"></p>
+
+<br>
+
+<p class="header">COMMENTS</p>
+<p id="comment_text" style="padding-left:40px; white-space: pre-line">{{comment}}</p>
+{% if student_info.0 %}
+<button id="edit_comment_btn" onclick="editComment();"
+        style="margin-left:40px; border:none; border-bottom: 1px solid #0645AD ; background:none; color:#0645AD ;font:inherit; padding:0">
+    Edit Comment
+</button>
+{% endif %}
+<form id="edit_comment_form" action="#" method="post" style="display:None">
+    {% csrf_token %}
+    <textarea name="comment" rows="5" cols="50">{{comment}}</textarea>
+    <input type="submit" class="button" name="submit_comment" value="Save Comment"/>
+</form>
+
+<br>
+
+<p class="header">QUIZZES</p>
+<p style="padding-left:40px">
+<table id="quiz_table" style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+    <tr>
+        <td style='border:1px solid black; padding:5; cursor:pointer; color:#0000EE' bgcolor='silver'
+            onclick="sortTable(0)">Quiz
+        </td>
+        <td style='border:1px solid black; padding:5; cursor:pointer; color:#0000EE' bgcolor='silver'
+            onclick='sortTableDate(1)'>Date
+        </td>
+        <td style='border:1px solid black; padding:5; cursor:pointer; color:#0000EE' bgcolor='silver'
+            onclick="sortTable(2)">Score
+        </td>
+        {% for i in "x"|rjust:"40" %}
+        <td style='border:1px solid black; padding:3; width:10px; font-size:12px' bgcolor='silver'>{{forloop.counter}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for sub in quizzes %}
+    <tr>
+        <td style='border:1px solid black; padding:5'><a class="btn"
+                                                         href="{{quiz_file_link}}/{{sub.quiz_id}}/{{student_info.0.1}}">{{sub.quiz_id}}</a>
+        </td>
+        <td style='border:1px solid black; padding:5'>{% if sub.date_submitted.month < 10 %}0{% endif %}
+            {{sub.date_submitted.month}}/{% if sub.date_submitted.day < 10 %}0{% endif %}
+            {{sub.date_submitted.day}}/{{sub.date_submitted.year}}
+        </td>
+        <td class="{% if sub.is_pass == 0 %} fail {% elif sub.is_pass == 1 %} pass {% endif %}"
+            style='border:1px solid black; padding:5'>{{sub.mark}}
+        </td>
+        {% for response, mark in sub.responses %}
+        <td class="{% if mark == '0' %} fail {% endif %}" style='border:1px solid black; padding:5; width:10px'>
+            {% if response == '1' %}
+            1
+
+            {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+
+<p class="header">QUIZ FEEDBACK</p>
+<p style="padding-left:40px">
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+
+    {% for fb in feedback %}
+
+    {% ifchanged fb.0 %}
+    <tr>
+        <td style='border:1px solid black; padding:5; text-transform:uppercase' bgcolor='silver'>{{fb.0}}</td>
+    </tr>
+    {% endifchanged %}
+    <tr>
+        <td style='border:1px solid black; padding:5; font-size:14'
+            class="{% if fb.2 %} right {% else %} wrong {% endif %}">
+
+            {% if fb.2 %}
+            You have shown understanding of
+            {% else %}
+            You still need to work on
+            {% endif %}
+            {{fb.1}}
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+
+<script>
+function editComment()
+{
+	document.getElementById('edit_comment_btn').style.display = 'none';
+    document.getElementById('comment_text').style.display = 'none';
+
+    document.getElementById('edit_comment_form').style.display = '';
+
+}
+
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("quiz_table");
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc";
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount ++;
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
+function sortTableDate(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("quiz_table");
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc";
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      p = x.innerHTML.split("/");
+      x = +(p[2]+p[0]+p[1]);
+      p = y.innerHTML.split("/");
+      y = +(p[2]+p[0]+p[1]);
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (Number(x) > Number(y)) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (Number(x) < Number(y)) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount ++;
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
+
+</script>

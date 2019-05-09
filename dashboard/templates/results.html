@@ -1,0 +1,212 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard - Results
+    </title>
+    <style>
+	td.fail {
+		background-color: E6B5B5;
+	}
+	td.pass {
+		background-color: A8C881;
+	}
+	td.half {
+		background-color: E5DFB3;
+	}
+	td.seven {
+		background-color: D8EAC2;
+	}
+	td.third {
+		background-color: E5D3D3;
+	}
+	td.failreq{
+		background-color: ff4242;
+	}
+	td.header{
+		background-color:#888888;
+		color:white;
+		border:1px solid black;
+		padding:5;
+		font-size:12px;
+	}
+	td.cell{
+		border:1px solid black;
+		padding:5;
+		font-size:14px;
+	}
+	.topnav {
+		background-color: #606060;
+		overflow: hidden;
+	}
+
+	.topnav a {
+		float: left;
+		color: white;
+		font-family:Helvetica;
+		text-align: center;
+		padding: 15px 2px;
+		width: 11.5%;
+		text-decoration: none;
+		font-size: 14px;
+		border-left: 1px solid #808182;
+	}
+
+	.topnav a:hover {
+		background-color: #404040;
+		color: white;
+	}
+
+	.topnav a.active {
+		background-color: dodgerblue;
+		color: white;
+	}
+
+	.button {
+	  display: inline-block;
+	  padding: 8px 12px;
+	  font-size: 14px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: dodgerblue;
+	  border: 0.5px solid #808182;
+	  border-radius: 2px;
+	}
+
+	.button:active {
+	  background-color: #125699;
+	}
+
+    </style>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<body style="font-family:Helvetica">
+<div class="topnav">
+    <a href="{% url 'dash_main' %}" style="border-left:0px solid black; width:4%; padding:11px 0px"><i
+            class="material-icons">home</i></a>
+    <a href="{% url 'answer_log' %}">Answer Log</a>
+    <a class="active">Results - All</a>
+    <a href="{% url 'results_student' %}">Results - Individual</a>
+    <a href="{% url 'topic_results_summary' %}">Topic Results</a>
+    <a href="{% url 'quiz_grade_counts' %}">Quiz Grade Counts</a>
+    <a href="{% url 'quiz_analysis' %}">Quiz Analysis</a>
+    <a href="{% url 'feedback_tally' %}">Question Feedback</a>
+    <a href="{% url 'comment' %}">Comment</a>
+</div>
+
+<br>
+<div style="display:inline-block">
+    <form action="#" method="get">
+        <span>FILTERS:</span>
+        <br>
+        <label style="margin-top:10px; margin-left:30px">Missing required element:</label>
+        {% if missing_required %}
+        <input type="checkbox" name="missing_required" checked style="margin-top:10px"/>
+        {% else %}
+        <input type="checkbox" name="missing_required" style="margin-top:10px"/>
+        {% endif %}
+        <br>
+        <input type="submit" class="button" name="filter" value="Apply filters"
+               style="margin-top:10px; margin-left:30px">
+    </form>
+</div>
+
+<div style="float:right">
+    <form action="#" method="post">
+        {% csrf_token %}
+        <input type="submit" class="button" name="download" value="Download CSV" style="font-size:18px">
+    </form>
+</div>
+
+<div style="clear: both;"></div>
+
+<div style="float: left; background-color:888888; text-align:center; display:inline-block; line-height:30px; margin-bottom:20px; margin-top:20px; padding-left:3px; padding-right:3px">
+    <font style="font-size:15px; color:white">AVERAGE</font>
+    <table align="center"
+           style="background-color:#f9e8d9; border-collapse:collapse; text-align:center; padding-left:10px; padding-right:10px; padding-bottom:10px">
+        <tr>
+            {% for item in averages %}
+            <td style="padding:10; border-right:1px solid silver; font-size:14px; text-transform:uppercase">
+                {{item.label}}:
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for item in averages %}
+            <td style="padding-left:10; padding-right:10; border-right:1px solid silver; font-size:16px">
+                {{item.average}}
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for item in averages %}
+            <td style="padding-left:10; padding-right:10; border-right:1px solid silver; font-size:16px">
+                /{{item.worth}}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+
+<p style="clear:left"></p>
+
+<table style="text-align:center; border-collapse:collapse; td.pass:background-color:black">
+    {% for record in student_records %}
+    <tr>
+        {% for item in record.personal_info %}
+        <td class="header">{{item.0}}</td>
+        {% endfor %}
+
+        <td style="text-transform:capitalize;" class="header">
+            Total
+        </td>
+
+        {% for component in record.overview %}
+        <td style="text-transform:capitalize;" class="header">
+            {{component.label}}&nbsp;(/{{component.worth}})
+        </td>
+        {% endfor %}
+
+        {% for component, results in record.topic_marks.items %}
+        {% for result in results %}
+        <td style="text-transform:uppercase;" class="header">{{result.topic}}</td>
+        {% endfor %}
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for item in record.personal_info %}
+        <td class="cell">
+            {% if forloop.counter == 1 %}
+            <a href="{{quiz_home}}dashboard/results_student/?student_id={{item.1}}&student_results=Submit#">
+                {{item.1}}
+            </a>
+            {% else %}
+            {{item.1}}
+            {% endif %}
+        </td>
+        {% endfor %}
+
+        <td style='border:1px solid black; padding:5'
+            class="cell {% if record.total >= 50 %} pass {% else %} fail {% endif %}">
+            {{record.total}}
+        </td>
+
+        {% for overview in record.overview %}
+        <td class="cell {% if overview.failRequired %} failreq {% elif overview.mark < 50 %} fail {% else %} pass {% endif %}">
+            {% if overview.mark == -1 %} N/A {% else %} {{overview.mark}} {% endif %}
+        </td>
+        {% endfor %}
+
+        {% for component, results in record.topic_marks.items %}
+        {% for result in results %}
+        <td class="cell {{result.status}}">
+            {% if result.grade == -1 %} N/A {% elif result.grade is not None %} {{result.grade}}
+            {% else %} &nbsp {% endif %}
+        </td>
+        {% endfor %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>

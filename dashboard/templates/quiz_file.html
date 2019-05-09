@@ -1,0 +1,52 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard - Student Quiz Results
+    </title>
+    <style>
+    body {
+        font-family:Helvetica;
+    }
+	td.fail {
+		background-color: E6B5B5;
+	}
+	td.pass {
+		background-color: A8C881;
+	}
+
+    </style>
+</head>
+
+<body>
+<p>{{student_id}}</p>
+<table style="cellspacing:1; cellpadding:5; border-collapse:collapse">
+    <tr>
+        <td style='border:1px solid black; padding:5; font-size:14px' bgcolor='silver'>Date</td>
+        <td style='border:1px solid black; padding:5; font-size:14px' bgcolor='silver'>Score</td>
+        {% for i in "x"|rjust:"40" %}
+        <td style='border:1px solid black; padding:3; width:10px; font-size:12px' bgcolor='silver'>{{forloop.counter}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for sub in subs %}
+    <tr>
+        <td style='border:1px solid black; padding:5; font-size:14px'>{{sub.date_submitted}}</td>
+        <td class="{% if sub.is_pass == 0 %} fail {% elif sub.is_pass == 1 %} pass {% endif %}"
+            style='border:1px solid black; padding:5'>{{sub.mark}}
+        </td>
+        {% for response, mark in sub.responses %}
+        <td class="{% if mark == '0' %} fail {% endif %}" style='border:1px solid black; padding:5; width:10px'>
+            {% if response == '1' %}
+            1
+
+            {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<br>
+
+{% load static %}
+<iframe style="width:100%; height: 85%" src="/static/{{quiz_id}}.pdf"></iframe>
+
+</body>

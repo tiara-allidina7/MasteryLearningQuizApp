@@ -1,0 +1,84 @@
+<head>
+    <title>{{ COURSE_NAME }} Dashboard - Quiz Analysis</title>
+    <style>
+	td.fail {
+		background-color: E06B6B;
+	}
+	td.seventyfive {
+		background-color: E6B5B5;
+	}
+	td.pass {
+		background-color: A8C881;
+	}
+	.topnav {
+		background-color: #606060;
+		overflow: hidden;
+	}
+
+	.topnav a {
+		float: left;
+		color: white;
+		font-family:Helvetica;
+		text-align: center;
+		padding: 15px 2px;
+		width: 11.5%;
+		text-decoration: none;
+		font-size: 14px;
+		border-left: 1px solid #808182;
+	}
+
+	.topnav a:hover {
+		background-color: #404040;
+		color: white;
+	}
+
+	.topnav a.active {
+		background-color: dodgerblue;
+		color: white;
+	}
+
+    </style>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<body>
+<div class="topnav">
+    <a href="{% url 'dash_main' %}" style="border-left:0px solid black; width:4%; padding:11px 0px"><i
+            class="material-icons">home</i></a>
+    <a href="{% url 'answer_log' %}">Answer Log</a>
+    <a href="{% url 'results' %}">Results - All</a>
+    <a href="{% url 'results_student' %}">Results - Individual</a>
+    <a href="{% url 'topic_results_summary' %}">Topic Results</a>
+    <a href="{% url 'quiz_grade_counts' %}">Quiz Grade Counts</a>
+    <a class="active" href="{% url 'quiz_analysis' %}">Quiz Analysis</a>
+    <a href="{% url 'feedback_tally' %}">Question Feedback</a>
+    <a href="{% url 'comment' %}">Comment</a>
+</div>
+<br>
+
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+    {% for quiz, record in quiz_records %}
+    {% ifchanged record.topic %}
+    <tr>
+        <td bgcolor="silver" style="border:1px solid black; padding:3; font-size:14">{{record.topic}}</td>
+        <td style='border:1px solid black; padding:3; width:10px; font-size:12px' bgcolor='silver'>Avg</td>
+        {% for i in "x"|rjust:"40" %}
+        <td style='border:1px solid black; padding:3; width:10px; font-size:12px' bgcolor='silver'>{{forloop.counter}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endifchanged %}
+    <tr>
+        <td bgcolor='#f9e8d9' style='border:1px solid black; padding:3; font-size:14'>{{quiz}}</td>
+        <td class="{% if record.mark < record.passing_mark %} fail {% else %} pass {% endif %}"
+            style='border:1px solid black; padding:3; font-size:14'>{{record.mark}}
+        </td>
+        {% for correct in record.correct %}
+        <td class="{% if correct < 0.5 %} fail {% elif correct < 0.75 %} seventyfive {% endif %}"
+            style='border:1px solid black; padding:3; font-size:14'>{{correct}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+</body>	

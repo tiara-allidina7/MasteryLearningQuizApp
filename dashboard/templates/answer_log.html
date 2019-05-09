@@ -1,0 +1,85 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard - Answer Log
+    </title>
+    <style>
+	td.fail {
+		background-color: E6B5B5;
+	}
+	td.pass {
+		background-color: A8C881;
+	}
+	.topnav {
+		background-color: #606060;
+		overflow: hidden;
+	}
+
+	.topnav a {
+		float: left;
+		color: white;
+		font-family:Helvetica;
+		text-align: center;
+		padding: 15px 2px;
+		width: 11.5%;
+		text-decoration: none;
+		font-size: 14px;
+		border-left: 1px solid #808182;
+	}
+
+	.topnav a:hover {
+		background-color: #404040;
+		color: white;
+	}
+
+	.topnav a.active {
+		background-color: dodgerblue;
+		color: white;
+	}
+
+    </style>
+</head>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<body>
+<div class="topnav">
+    <a href="{% url 'dash_main' %}" style="border-left:0px solid black; width:4%; padding:11px 0px"><i
+            class="material-icons">home</i></a>
+    <a class="active">Answer Log</a>
+    <a href="{% url 'results' %}">Results - All</a>
+    <a href="{% url 'results_student' %}">Results - Individual</a>
+    <a href="{% url 'topic_results_summary' %}">Topic Results</a>
+    <a href="{% url 'quiz_grade_counts' %}">Quiz Grade Counts</a>
+    <a href="{% url 'quiz_analysis' %}">Quiz Analysis</a>
+    <a href="{% url 'feedback_tally' %}">Question Feedback</a>
+    <a href="{% url 'comment' %}">Comment</a>
+</div>
+<br>
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+    <tr>
+        <td style='border:1px solid black; padding:5' bgcolor='silver'>Student ID</td>
+        <td style='border:1px solid black; padding:5' bgcolor='silver'>Quiz</td>
+        <td style='border:1px solid black; padding:5' bgcolor='silver'>Score</td>
+        {% for i in "x"|rjust:"40" %}
+        <td style='border:1px solid black; padding:3; width:10px; font-size:12px' bgcolor='silver'>{{forloop.counter}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% for sub in submissions %}
+    <tr>
+        <td style='border:1px solid black; padding:5' bgcolor='FADBD8'>{{sub.student_id}}</td>
+        <td style='border:1px solid black; padding:5' bgcolor='D6EAF8'>{{sub.quiz_id}}</td>
+        <td class="{% if sub.is_pass == 0 %} fail {% elif sub.is_pass == 1 %} pass {% endif %}"
+            style='border:1px solid black; padding:5'>{{sub.mark}}
+        </td>
+        {% for response, mark in sub.responses %}
+        <td class="{% if mark == '0' %} fail {% endif %}" style='border:1px solid black; padding:5; width:10px'>
+            {% if response == '1' %}
+            1
+
+            {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</body>

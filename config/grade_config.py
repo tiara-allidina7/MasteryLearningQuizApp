@@ -1,0 +1,12 @@
+# WEIGHTS
+QUIZ_WORTH = 100
+
+# REQUIRED
+QUIZ_REQUIRED = True
+
+# LABELS
+QUIZ_LABEL = "Quiz"
+
+REQUIRED_QUIZZES = []  # eg. ["a1", "b2", "c3"]
+
+ADD_BONUS = False

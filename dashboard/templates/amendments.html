@@ -1,0 +1,78 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard - Amendments
+    </title>
+    <style>
+    .button {
+	  display: inline-block;
+	  padding: 7px 10px;
+	  font-size: 16px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: dodgerblue;
+	  border: 1px solid #808182;
+	  border-radius: 3px;
+	}
+
+    .button:active {
+	  background-color: #125699;
+	}
+
+    </style>
+</head>
+
+<body style="font-family:Helvetica; text-align:center;">
+
+
+<h1 style="background-color:dodgerblue; color:white; font-size:200%; text-align:center; padding:10px">{{ COURSE_NAME }}
+    Grades Dashboard</h1>
+<h3 style="text-align:center; font-size:22px">Grade Amendments</h3>
+
+<form method="post" style="text-align:center; margin-top:40px">
+    {% csrf_token %}
+    <table style="font-family:helvetica; margin: 0 auto; text-align:left">
+        {{ form }}
+    </table>
+    Enter grade out of 1<br>
+    Enter -1 for exemption<br>
+    <div style="color:red;margin-bottom:10px; margin-top:10px">{{error}}</div>
+    <input type="submit" value="Update" name="update" class="button"/>
+</form>
+
+
+{% if topic %}
+<div style="text-align:center; font-size:18px; margin-top:40px; background-color:#ddedff; border: 0.6px solid black; display:inline-block; margin: 0 auto; padding-top:10px; padding-left:10px; padding-right:10px">
+    The following amendment will be applied:
+    <table style="margin: 0 auto; border-collapse:separate; border-spacing:0 7px;">
+        <tr>
+            <td style="background-color:#787878; color:white; border:0.7px solid black; padding:5">Student:</td>
+            <td style="border:0.7px solid black; padding:5; border-left:0px">{{student_id}}</td>
+        </tr>
+        <tr>
+            <td style="background-color:#787878; color:white; border:0.7px solid black; padding:5">Topic:</td>
+            <td style="border:0.7px solid black; padding:5; border-left:0px">{{topic}}</td>
+        </tr>
+        <tr>
+            <td style="background-color:#787878; color:white; border:0.7px solid black; padding:5">Old grade:</td>
+            <td style="border:0.7px solid black; padding:5; border-left:0px">{{current_grade}}</td>
+        </tr>
+        <tr>
+            <td style="background-color:#787878; color:white; border:0.7px solid black; padding:5">New grade:</td>
+            <td style="border:0.7px solid black; padding:5; border-left:0px">{{new_grade}}</td>
+        </tr>
+    </table>
+    {% if not confirmed %}
+    <form method="post" style="text-align:center; margin-top:5px">
+        {% csrf_token %}
+        <input type="submit" value="Confirm" class="button" name="confirm" style="font-weight:bold; font-size:20px"/>
+    </form>
+    {% else %}
+    <p style="color:#2eb82e">Amendment applied.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+</body>

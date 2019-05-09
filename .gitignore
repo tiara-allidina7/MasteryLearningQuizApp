@@ -1,0 +1,16 @@
+*.pyc
+quiz/migrations/*
+dashboard/migrations/*
+verbal/migrations/*
+**/.idea/workspace.xml 
+**/.idea/tasks.xml
+handback-files/*
+import_data/*
+export_data/*
+scripts/*
+quiz_files/*
+db/*
+compare/*
+.idea/*
+210_quizzes
+ml_quiz_app/config.py

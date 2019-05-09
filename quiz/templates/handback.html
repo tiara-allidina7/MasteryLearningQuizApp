@@ -1,0 +1,215 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Handback
+    </title>
+    <style>
+	body {
+		font-family:helvetica
+	}
+	.header{
+	    margin-top:30px;
+	    font-size:20px;
+	    display:inline-block;
+	}
+	td.wrong {
+		background-color: E6B5B5;
+	}
+	td.right {
+		background-color: c4dba8;
+	}
+	.circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 18px;
+      color: #fff;
+      line-height: 60px;
+      text-align: center;
+	  background-color: efaaaa;
+    }
+    .pass {
+      background-color: 669b25;
+    }
+    .half {
+      background-color: b9ef77;
+    }
+    .fail {
+		background-color: efaaaa;
+	}
+	.failreq{
+		background-color: ff4242;
+	}
+	.exempt{
+	    background-color: 989898;
+	}
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      color: #0645AD;
+      border-bottom: 1px dotted black;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: #383838;
+      color: #fff;
+      text-align: center;
+      padding: 5px 5px;
+      border-radius: 6px;
+      font-weight: normal;
+      position: absolute;
+      z-index: 1;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+
+    </style>
+</head>
+<body>
+<h1 style="background-color:dodgerblue; color:white; font-family:helvetica; font-size:200%; text-align:center; padding:10px">
+    {{ COURSE_NAME }} Handback</h1>
+
+<span style="background-color:#E4DDEC;padding-top:10px;padding-bottom:10px; padding-left:30px; padding-right:30px;font-family:helvetica;border:0.5px solid #A8A8A8; display:inline-block; border-radius:20px">
+        <font size="2">STUDENT:</font> &nbsp;{{student_id}}
+    </span>
+
+<div style="float:right">
+    Last updated: {{last_pushed}}
+</div>
+
+<br>
+
+{% if error %}
+<p style="color:red">{{error}}</p>
+{% endif %}
+
+<br>
+
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse; margin-top:10px; table-layout:fixed; width:80%">
+    <tr>
+        <th style='background-color: #787878; color: white; text-align:center; border:0.5px solid black; padding:8; font-size:16'>
+            Total
+        </th>
+        {% for component in overview %}
+        <th style='background-color: #787878; color: white; text-align:center; border:0.5px solid black; padding:8; font-size:16'>
+            {{component.label}}
+            {% if component.label == 'Quiz' %}
+            <div class="tooltip">(?)
+                <span class="tooltiptext">Average quiz score so far <br><br><font size="2">(Sum of quiz scores) / (# of quizzes) * {{component.worth}}</font></span>
+            </div>
+            {% elif component.label == 'Assignment' %}
+            <div class="tooltip">(?)
+                <span class="tooltiptext">Average assignment mark so far <br><br><font size="2">(Sum of assignment marks) / (# of assignments) * {{component.worth}}</font></span>
+            </div>
+            {% endif %}
+        </th>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td style='text-align:center; border-left:0.5px solid black; border-right:0.5px solid black; border-top:0.5px solid black; padding:8; font-size:16'>
+            {{total}}
+        </td>
+        {% for component in overview %}
+        <td style='text-align:center; border-left:0.5px solid black; border-right:0.5px solid black; border-top:0.5px solid black; padding:8; font-size:16'>
+            {% if component.mark == -1 %} N/A {% else %} {{component.mark}} {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td style='text-align:center; border-left:0.5px solid black; border-right:0.5px solid black; border-bottom:0.5px solid black; padding:8; font-size:16'>
+            /100
+        </td>
+        {% for component in overview %}
+        <td style='text-align:center; border-left:0.5px solid black; border-right:0.5px solid black; border-bottom:0.5px solid black; padding:8; font-size:16'>
+            /{{component.worth}}
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+
+{% for component, results in topic_marks.items %}
+<div style="margin-top:30px; font-size:18px; display:inline-block; text-transform:uppercase">{{component}}</div>
+<p>
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+    <tr>
+        {% for result in results %}
+        <td style='padding:8; text-align:center; padding-bottom:0'>
+            <div class="circle {{result.status}}">
+                {{result.grade}}
+            </div>
+            <div style="padding-top:2px; text-transform:uppercase">
+                {{result.topic}}
+            </div>
+        </td>
+        {% if forloop.counter|divisibleby:5 %}
+    </tr>
+    <tr>
+        {% endif %}
+        {% endfor %}
+    </tr>
+</table>
+{% endfor %}
+
+{% if midterm %}
+<div style="margin-top:30px; font-size:18px; display:inline-block">MIDTERM</div>
+<p>
+<table style="font-family:Helvetica; cellspacing:1; cellpadding:5; border-collapse:collapse">
+    <tr>
+        <td style='padding:8; text-align:center; padding-bottom:0'>
+            <div class="circle {% if 'N' in midterm %} exempt {% elif not midterm or midterm < 50 %} fail {% elif midterm >= 50 %} pass {% else %} blank {% endif %}">
+                {{midterm}}
+            </div>
+        </td>
+    </tr>
+</table>
+
+{% if midterm_link %}
+<a href={{midterm_link}}>View Midterm</a>
+{% endif %}
+
+{% endif %}
+
+<div style="margin-top:30px; font-size:18px; display:inline-block">QUIZ FEEDBACK</div>
+<div>
+    <span style="display:inline-block; margin-top:20px; font-size:14; color:#787878">Legend:</span>
+    <table style="cellspacing:1; cellpadding:5; border-collapse:collapse; margin-top:5px; margin-left:20px">
+        <tr>
+            <td style="border:0.5px solid #787878; padding:8; font-size:12">
+                You have shown understanding of this material.
+            </td>
+        </tr>
+        <tr>
+            <td class="wrong" style="border:0.5px solid #787878; padding:8; font-size:12">
+                You still need to work on this material.
+            </td>
+        </tr>
+    </table>
+</div>
+<p>
+<table style="font-family:Helvetica;  border-collapse:separate; border-spacing: 10 25; text-align:center">
+
+    {% for topic, entries in feedback %}
+
+    <tr>
+        <td style="border:0.5px solid black; background:#787878; color:white; padding-left:5px; padding-right:5px; font-size:32px">
+            {{topic}}
+        </td>
+        <td>
+            <table style="cellspacing:1; cellpadding:5; border-collapse:collapse">
+                {% for entry in entries %}
+                <tr>
+                    <td style='border:0.5px solid black; padding:8; font-size:14; width:100%'
+                        class="{% if not entry.correct %} wrong {% endif %}">
+                        {{entry.msg}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>

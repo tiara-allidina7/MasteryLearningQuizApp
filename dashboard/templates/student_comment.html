@@ -1,0 +1,88 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Dashboard - Student Comment
+    </title>
+    <style>
+	body {
+		font-family:helvetica
+	}
+	.topnav {
+		background-color: #606060;
+		overflow: hidden;
+	}
+
+	.topnav a {
+		float: left;
+		color: white;
+		font-family:Helvetica;
+		text-align: center;
+		padding: 15px 2px;
+		width: 11.5%;
+		text-decoration: none;
+		font-size: 14px;
+		border-left: 1px solid #808182;
+	}
+
+	.topnav a:hover {
+		background-color: #404040;
+		color: white;
+	}
+
+	.topnav a.active {
+		background-color: dodgerblue;
+		color: white;
+	}
+	.button {
+	  display: inline-block;
+	  padding: 8px 12px;
+	  font-size: 14px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: dodgerblue;
+	  border: 0.5px solid #808182;
+	  border-radius: 2px;
+	}
+
+	.button:active {
+	  background-color: #125699;
+	}
+
+    </style>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<body>
+<div class="topnav">
+    <a href="{% url 'dash_main' %}" style="border-left:0px solid black; width:4%; padding:11px 0px"><i
+            class="material-icons">home</i></a>
+    <a href="{% url 'answer_log' %}">Answer Log</a>
+    <a href="{% url 'results' %}">Results - All</a>
+    <a href="{% url 'results_student' %}">Results - Individual</a>
+    <a href="{% url 'topic_results_summary' %}">Topic Results</a>
+    <a href="{% url 'quiz_grade_counts' %}">Quiz Grade Counts</a>
+    <a href="{% url 'quiz_analysis' %}">Quiz Analysis</a>
+    <a href="{% url 'feedback_tally' %}">Question Feedback</a>
+    <a class="active">Comment</a>
+</div>
+<br>
+<form action="#" method="get">
+    <label>Enter student ID:</label>
+    <input type="text" name="student_id" size="5"/>
+    <input type="submit" class="button" name="submit_student_id" value="Search">
+</form>
+<p style="color:red">{{error}}</p>
+
+<br>
+{% if student_id %}
+<p>Edit comment for {{student_id}}: </p>
+<form action="#" method="post">
+    {% csrf_token %}
+    <textarea name="comment" rows="5" cols="50">{{comment}}</textarea>
+    <input type="submit" class="button" name="submit_comment" value="Save Comment"/>
+</form>
+{% endif %}
+{% if request.POST.submit_comment %}
+<p style="color:2eb82e; font-size:18px">&#10004 Comment saved</p>
+{% endif %}

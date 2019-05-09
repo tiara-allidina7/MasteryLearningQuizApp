@@ -1,0 +1,75 @@
+<head>
+    <title>
+        {{ COURSE_NAME }} Quiz Form
+    </title>
+</head>
+
+<body>
+<h1 style="background-color:dodgerblue; color:white; font-family:helvetica; font-size:200%; text-align:center; padding:10px">
+    {{ COURSE_NAME }} Quiz Form</h1>
+<table style="background-color:#E4DDEC;padding:10px;font-family:helvetica;border:0.5px solid #A8A8A8">
+    <tr>
+        <td style="padding-top: 5px; padding-bottom: 5px; font-size:80%">STUDENT:</td>
+        <td style="padding-top: 5px; padding-bottom: 5px">{{student_id}}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 5px; font-size:80%">TOPIC:</td>
+        <td style="padding-bottom: 5px">{{topic}}</td>
+    </tr>
+</table>
+
+<br>
+{% include quiz_file %}
+<br>
+
+<p style="font-family:helvetica; text-align:center">Enter your answers below.</p>
+
+
+<form action="" method="post" style="text-align:center">
+    {% csrf_token %}
+    <table style="font-family:helvetica; margin: 0 auto; text-align:left;width:25%;float:left">
+        {% for field in form %}
+        {% if forloop.counter <= 10 %}
+        <tr>
+            <td style="text-align:right; padding-bottom:5px">{{field.label}}:</td>
+            <td>{{ field }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+    <table style="font-family:helvetica; margin: 0 auto; text-align:left;width:25%;float:left">
+        {% for field in form %}
+        {% if forloop.counter > 10 and forloop.counter <= 20 %}
+        <tr>
+            <td style="text-align:right; padding-bottom:5px">{{field.label}}:</td>
+            <td>{{ field }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+    <table style="font-family:helvetica; margin: 0 auto; text-align:left;width:25%;float:left">
+        {% for field in form %}
+        {% if forloop.counter > 20 and forloop.counter <= 30 %}
+        <tr>
+            <td style="text-align:right; padding-bottom:5px">{{field.label}}:</td>
+            <td>{{ field }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+    <table style="font-family:helvetica; margin: 0 auto; text-align:left;width:25%;float:right">
+        {% for field in form %}
+        {% if forloop.counter > 30 and forloop.counter <= 40 %}
+        <tr>
+            <td style="text-align:right; padding-bottom:5px">{{field.label}}:</td>
+            <td>{{ field }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+    <br/>
+    <input type="submit" value="Submit" action="submit_quiz"
+           style="font-family:helvetica; background-color:dodgerblue; color:white; padding:7px 15px; font-size:100%"/>
+</form>
+
+</body>	
